@@ -1,0 +1,245 @@
+//API.GS This is the endpoint
+ //API:    https://script.google.com/macros/s/AKfycbzMrWNtzX4y1cGTLH9x0WtzngbTb0GiH0bYEtQ75qGFWH3aU-2SGqyAZurVwhqHQfAmXw/exec
+ var ss = SpreadsheetApp.getActiveSpreadsheet();
+ const sheet = ss.getSheetByName("#Auto_Combined");
+function doGet(e){
+  let obj = {};
+  let data = sheet.getDataRange().getValues()
+  obj.content = data;
+  console.log(data[0]);
+return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON)
+   // var myJSON = JSON.stringify(bizReturner);
+    //return ContentService.createTextOutput(myJSON).setMimeType(ContentService.MimeType.JSON);
+}
+
+----------------------------------------------------------------------------------------------------------------
+//Google drive files to gsheet - in tabular form (subfolders to right)
+//WORKED 2023.04.30 , works 2023.05.21
+//StandAlone script. filesnames etc to some other gsheet file, to particular sheetname.
+
+function listFolderContents(folderId) {
+  //console.log(folderId);
+  var folder = DriveApp.getFolderById(folderId);
+  var contents = folder.getFiles();
+  var subfolders = folder.getFolders();
+  var file, data;
+  var vArray_Dict = [];
+  while(contents.hasNext()) {
+    file = contents.next();
+    //vDict = {'name': file.getName(), 'link' : file.getUrl(), 'isFolder' : 'No'};
+    fileName = file.getName();
+    if(!fileName.includes("#")){
+      vDict = fileName + " ; " + file.getUrl();
+      vArray_Dict.push(vDict);
+    }
+  }
+  
+  while(subfolders.hasNext()) {
+    var subfolder = subfolders.next();
+    //vDict = {'name': subfolder.getName(), 'link' : subfolder.getUrl(), 'isFolder' : 'Yes'};
+    var folderName = subfolder.getName();
+    if(!folderName.includes("#")){
+      vDict = folderName + " ; " + subfolder.getUrl();
+      vArray_Dict.push(vDict);
+    }    
+
+  }
+  return vArray_Dict;
+}
+
+function url_To_FolderId(url){
+  //console.log(url);
+  words = url.split("folders/");
+  //console.log(words[1]);
+  return(words[1])
+}
+
+function display_Array(vArray){
+  for (var i = 0; i < vArray.length; i++) {
+    //str = i.toString() +  ") "  + rootArray[i]['name']  +  ",  " + url_To_FolderId(rootArray[i]['link']);
+    str = vArray[i];
+    console.log(str);        
+  }  
+}
+
+function append_Sheet(vArr, sheet){
+  vvData = [];
+  for (var i = 0; i < vArr.length; i++) {
+    if(!vArr[i].includes("#")){
+      //vvData.push(vData[i])
+      console.log("appending: " + vArr[i]);
+      sheet.appendRow(vArr[i]); //it needs array
+    }
+  }
+}
+
+function getSubFolder(vString){
+  //vArray = [];
+  //for (var i = 0; i < vData.length; i++) { 
+    //console.log(vString);
+    folderId = url_To_FolderId(vString.split(";")[1]);
+    //console.log("Test " + folderId);
+    subFoldersFiles_DictArray =  listFolderContents(folderId);
+    //console.log(subFoldersFiles);
+    return subFoldersFiles_DictArray;
+  }
+
+function makeRow(str, arr){
+  newArr = [];
+  newArr.push(str);
+  //console.log("makeRow");
+  //console.log(newArr);
+  //console.log(arr);
+  newArr = newArr.concat(arr.sort());
+
+  return newArr;
+}
+
+// https://drive.google.com/drive/folders/1Go5j_6NzAkRSN92nOgw8uKYdG64k_PeI?usp=sharing
+function Main_listAllFolderContents() {
+  var file, data, sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Table_MyDrive'); 
+  sheet.clear();
+  var folderId = '1xymZqYisMpaSZQpnE1Q4jpJ_sRzacFMf'; // replace with the ID of the folder you want to list
+  //var folder = DriveApp.getFolderById(folderId);
+  var rootArray = listFolderContents(folderId);
+  rootArray = rootArray.sort();
+  display_Array(rootArray);
+  vStringArray = [];
+  for (var i = 0; i < rootArray.length; i++) {
+      name = rootArray[i].split(";")[0];
+      if(!name.includes("#")){
+        //vStringArray.push(rootArray[i])
+        //vString = (rootArray[i]['name'] + " ; " + rootArray[i]['link']);
+        vString = (rootArray[i]);
+        //console.log("SubFolders : " + vString);
+        subFoldersFiles_DictArray = getSubFolder(vString);
+        console.log("Sub Folder Listing");
+        console.log(subFoldersFiles_DictArray);
+        row = makeRow(vString, subFoldersFiles_DictArray);
+        vStringArray.push(row);
+        //break;
+      }
+
+  }
+  console.log("start");
+  //console.log( vStringArray.length);
+  display_Array(vStringArray);
+  //append_Sheet(file, data, sheet, vData);
+  //https://docs.google.com/spreadsheets/d/1BQd1VeueJ5cVrox9Am06toW7VQB9nQv-Wtjw_IkTIDI/edit?usp=sharing
+
+  //Replace with your sheet name
+  //sheet.getRange(2, 1, sheet.getLastRow(), 2).clearContent();
+  //sheet.getRange(2, 1, data.length, 2).setValues(data);
+   //sheet.appendRow(vStringArray);
+   append_Sheet(vStringArray, sheet);
+}
+
+
+
+-------------------------------------------------------------------------------------------------------------------
+//All sheets (not having #, combined to single sheet, row by row.
+function mergeSheets_RowByRow() {//this is the best
+  var sourceSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets = sourceSpreadsheet.getSheets();
+  var destSheetName  = "#Auto_Combined";
+  var destinationSheet = sourceSpreadsheet.getSheetByName(destSheetName); // Change "Destination" to the name of the destination sheet
+  destinationSheet.clear();
+
+  
+  for (var i = 0; i < sheets.length; i++) {
+    var sheet = sheets[i];
+    var sheetName = sheets[i].getName();
+    if(!sheetName.includes("#")){ // # means not to be included in automation. Also the combined sheet be avoided.
+      destinationSheet.appendRow(["#Sheet;" + sheetName]);
+      //destinationSheet.appendRow([sheetName]);
+      var data = sheet.getDataRange().getValues();
+      data.forEach(function (row) {
+        Logger.log(row);
+        var rrw = [];
+
+        row.forEach(function (col){
+          //Logger.log("col ", col);
+          if (col.includes("http") && !col.includes(";") && rrw.length>=1 ){
+            Logger.log("found http" + rrw.length.toString())
+            //if(rrw.length>=1){
+              rrw[rrw.length-1] = rrw[rrw.length-1] + ";" + col;
+            //}
+            //console.log(rrw);
+          }else{
+            rrw.push(col);
+            //console.log(col)
+          }
+        });
+        console.log(rrw);
+        destinationSheet.appendRow(rrw)
+      });
+
+
+    }else{
+      console.log("avoiding :" + sheetName);
+    }
+
+  }
+}
+
+function mergeSheets_SheetBySheet() {//old 
+  var sourceSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets = sourceSpreadsheet.getSheets();
+  var destSheetName  = "#New_Auto_Combined";
+  var destinationSheet = sourceSpreadsheet.getSheetByName(destSheetName); // Change "Destination" to the name of the destination sheet
+  destinationSheet.clear();
+
+  
+  for (var i = 0; i < sheets.length; i++) {
+    var sheetName = sheets[i].getName();
+    if(!sheetName.includes("#") && sheetName != destSheetName){ // # means not to be included in automation. Also the combined sheet be avoided.
+      sheetName = "#Sheet;" + sheetName;
+      destinationSheet.appendRow([sheetName]);
+      console.log("adding : " + sheetName);
+      var sourceSheet = sheets[i];
+      var sourceRange = sourceSheet.getDataRange();
+      var lastRow = destinationSheet.getLastRow();
+      //var lastColumn = destinationSheet.getLastColumn();
+      //var destinationRange = destinationSheet.getRange(lastRow + 1, 1, sourceRange.getNumRows(), lastColumn);
+      var destinationRange = destinationSheet.getRange(lastRow + 1, 1, sourceRange.getNumRows(), sourceRange.getNumColumns()); //range of source sheet.
+      sourceRange.copyTo(destinationRange);
+    }else{
+      console.log("avoiding :" + sheetName);
+    }
+
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
