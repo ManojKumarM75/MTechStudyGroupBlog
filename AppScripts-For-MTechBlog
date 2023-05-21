@@ -13,6 +13,7 @@ return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentS
 }
 
 ----------------------------------------------------------------------------------------------------------------
+Auto_FileToMyTableSheet.gs
 //Google drive files to gsheet - in tabular form (subfolders to right)
 //WORKED 2023.04.30 , works 2023.05.21
 //StandAlone script. filesnames etc to some other gsheet file, to particular sheetname.
@@ -137,6 +138,7 @@ function Main_listAllFolderContents() {
 
 
 -------------------------------------------------------------------------------------------------------------------
+Auto_Combine_RowByRow.gs
 //All sheets (not having #, combined to single sheet, row by row.
 function mergeSheets_RowByRow() {//this is the best
   var sourceSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
