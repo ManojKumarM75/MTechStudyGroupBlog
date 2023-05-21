@@ -1,0 +1,103 @@
+<!--- 2023.05.08 WORKED EndPoint Google Sheet API - fetch and put as html table with buttons -->
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2W0V3GSXXM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2W0V3GSXXM');
+</script>
+<!---end of gtag-->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        tr {
+            background-color: lightGrey;
+        }
+        
+        tr:nth-child(2n) {
+            background-color: rgb(155, 211, 212);
+        }
+    </style>
+</head>
+ 
+<body>
+<table id="table1"></table>
+<table id="table2"></table>
+
+  <script>
+    var url = "https://docs.google.com/spreadsheets/d/1V3yJNLWNhsnDXOXkoOxMxYX9FeYCnt0LWMZMdabtnTg/edit?usp=sharing";  //my doc - direct , NOTWORKING     
+    //var  api = 'https://script.google.com/macros/s/AKfycbzn2e0bH7fCyaJiDHBokTBVnOgtHAkNjWbqvR_f5GD_o87l3T8RLVpuwkLMdQb7ULnsvw/exec' //WORKS
+    
+    //var api = "https://script.google.com/macros/s/AKfycbyHDMuDcnjrnfJiqHr_UnIopupvFUwfbrOSs-BCwIBQ2ar4Y2x0b3Xp5M6ytPTTWq1Ypw/exec";
+    //var api = "https://script.google.com/macros/s/AKfycbwgfB__3k4TbWtXBJEgZRwTFarM2cTrvZJexmgmwoE7sjIEOjZYVqfcRDNqvPYh-0Hj8w/exec";
+    //var api = 'https://script.google.com/macros/s/AKfycbyHc-CNzi9zBzUrXVDQwhyDOmmG7NkAL3D7Uqx7cbI0L_WNBYh57MhxQp_Ya7LX48CTWg/exec';
+    var api = 'https://script.google.com/macros/s/AKfycbwGqfu3-DtnPCg6eu-Xz45poPJnKv4ZDOjqKeTwjsZWG1o7ACxyKA_kfemZNMVZPkTqnw/exec';
+        fetch(api) //only api works
+        .then(res => res.json())
+        .then(data => {
+            d = data.content;
+            //d.sort();
+            CreateTable(d);
+         }
+        );
+
+    
+    function CreateTable(d){
+        let tr = '';
+        for (let i = 0; i < d.length; i++) {
+            let td = '';
+            for (let x = 0; x < d[i].length; x++) {
+                /*if (i == 0){
+                    words = d[i][x].split(";");
+                    hrf =   "<a href=" + words[1]  + ' target="_blank">' + words[0] + "</a>";
+                    td = td + '<th>' + hrf + '</th>';
+                } else {*/
+                    if(d[i][x].indexOf(';')>=0){ // includes ';' means 2nd part in https link
+                        td = td + CreateButton(d[i][x]);
+                    }else{
+                        td = td + '<td>' + d[i][x] + '</td>';
+                        console.log("Test " + d[i][x]);
+                    }
+                //}
+            }
+            
+            tr1 =  `<tr>${td}</tr>`;
+            if(!tr1.includes("#")){ // doesnot include '#'
+                tr =  tr + tr1;}
+            else{
+                console.log("Removed : " + tr1);}
+            
+        }
+        document.getElementById("table2").innerHTML = tr;
+    }
+
+    function CreateButton(cellVal){
+        words = cellVal.split(";");
+        button_val = words[0];
+        link = words[1].trim();
+        words = button_val.split("."); // remove the serial number and dot of the filename numbering  used for sort.
+        console.log("lenght of words = " + words.length)
+        if(words.length>1){            // only if '.' is present, else use full
+            button_val = words[1];
+        }
+        hrf = "<button onclick=" + '"window.open(' + "'" + link + "', '_blank');"  + '">' 
+                                                +  button_val + '</button>';
+        td = '<td>' + hrf + '</td>';
+        console.log(td);
+        return td;
+    }
+</script>
+
+
+</body>
+ 
+</html>

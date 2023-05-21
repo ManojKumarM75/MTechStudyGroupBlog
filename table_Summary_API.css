@@ -1,0 +1,40 @@
+table {
+  font-family: Arial, Helvetica, sans-serif;
+  width: 100%;
+}
+table td, table th {
+
+}
+table tr:nth-child(even){background-color: #f2f2f2;}
+table tr:hover {background-color: #ddd;}
+table th {
+    text-align: left;
+    /* background-color: #04AA6D; */
+    color: white;
+    background-clip: padding-box;
+    /* padding: 23px; */
+}
+/*button{
+#btn_tS {*/
+table button{
+    background: white;
+    /*text-align: left;*/
+    text-align: center;
+    /*padding: 20px 50px 20px 50pxpx;*/
+    padding: 10px 10px 10px 10px;
+    /* display: none; */
+    cursor: pointer;
+    background: #4CAF50;
+    color: white;
+    /*padding: 20px 49px; Original*/
+    border: 0px;
+    box-shadow: 8px 2px 10px grey;
+    border-radius: 43px;
+    font-size: 15px;
+    letter-spacing: 1px;
+    font-weight: bold;
+    text-shadow: 0px 0px 10px grey;
+}
+table tr td{
+    padding: 20px;
+}
