@@ -127,12 +127,12 @@ function Create_Links(d, i, Row){  //expects only one col with ; as seperator be
     }
         
     console.log(rw);
-    //if(!rw.includes("#")){ // doesnot include '#'
+    if(!rw.includes("#")){ // doesnot include '#'
         Row =  Row + rw;
         
-    //}else{
+    }else{
         //console.log("Removed rw: " + rw);
-    //}
+    }
     return Row;
 }
 
