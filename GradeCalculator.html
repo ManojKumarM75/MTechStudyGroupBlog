@@ -206,7 +206,7 @@
                 document.getElementById("nlp_effective_total").textContent = eff_marks.toFixed();
                 totalMarks += eff_marks;
                 units = parseFloat(document.getElementById("nlp_units").value) || 0;
-                document.getElementById("nlp_weighted").textContent = effmarks * units;
+                document.getElementById("nlp_weighted").textContent = eff_marks * units;
                 totalUnits += units;
                 totalWeightedMarks += eff_marks * units;
             }else{
