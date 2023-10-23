@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Grade Calculator</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 60%;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Grade Calculator</h1>
+    <p>Enable/Disable exactly 3 subjects and enter your marks & CGPA:</p>
+    
+    <table>
+        <tr>
+            <th>Enable</th>
+            <th>Subject</th>
+            <th>Units</th>
+            <th>EC1</th>
+            <th>EC2</th>
+            <th>EC3</th>
+            <th>Total</th>
+            <th>Effective Total</th>
+            <th>Weighted</th>
+        </tr>
+        <tr>
+            <td><input type="checkbox" id="dl_enable" checked disabled></td>
+            <td>DL</td>
+            <td><input type="number" id="dl_units" min="0" max="10" value="4" disabled oninput="calculateTotalMarks();"></td>
+            <td><input type="number" id="dl_ec1" min="0" max="100" value="29.25" disabled oninput="calculateTotalMarks(); updateCalculateButton()"></td>
+            <td><input type="number" id="dl_ec2" min="0" max="100" value="10" disabled oninput="calculateTotalMarks(); updateCalculateButton()"></td>
+            <td><input type="number" id="dl_ec3" min="0" max="100" value="10" disabled oninput="calculateTotalMarks(); updateCalculateButton()"></td>
+            <td><span id="dl_total"></span></td>
+            <td><span id="dl_effective_total"></span></td>
+            <td><span id="dl_weighted"></span></td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" id="pgm_enable"  onclick="enableInputs('pgm'); updateCalculateButton()"></td>
+            <td>PGM</td>
+            <td><input type="number" id="pgm_units" min="0" max="10" value="5" disabled oninput="calculateTotalMarks();"></td>
+            <td><input type="number" id="pgm_ec1" min="0" max="100" value="24" disabled oninput="calculateTotalMarks(); updateCalculateButton()"></td>
+            <td><input type="number" id="pgm_ec2" min="0" max="100" value="11" disabled oninput="calculateTotalMarks(); updateCalculateButton()"></td>
+            <td><input type="number" id="pgm_ec3" min="0" max="100" value="11" disabled oninput="calculateTotalMarks(); updateCalculateButton()"></td>
+            <td><span id="pgm_total"></span></td>
+            <td><span id="pgm_effective_total"></span></td>
+            <td><span id="pgm_weighted"></span></td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" id="bds_enable"  onclick="enableInputs('bds'); updateCalculateButton()"></td>
+            <td>BDS</td>
+            <td><input type="number" id="bds_units" min="0" max="10" value="5" disabled oninput="calculateTotalMarks();"></td>
+            <td><input type="number" id="bds_ec1" min="0" max="100" value="29" disabled oninput="calculateTotalMarks(); updateCalculateButton()"></td>
+            <td><input type="number" id="bds_ec2" min="0" max="100" value="22" disabled oninput="calculateTotalMarks(); updateCalculateButton()"></td>
+            <td><input type="number" id="bds_ec3" min="0" max="100" value="22" disabled oninput="calculateTotalMarks(); updateCalculateButton()"></td>
+            <td><span id="bds_total"></span></td>
+            <td><span id="bds_effective_total"></span></td>
+            <td><span id="bds_weighted"></span></td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" id="spa_enable"  onclick="enableInputs('spa'); updateCalculateButton()"></td>
+            <td>SPA</td>
+            <td><input type="number" id="spa_units" min="0" max="10" value="5" disabled oninput="calculateTotalMarks();"></td>
+            <td><input type="number" id="spa_ec1" min="0" max="100" value="26" disabled oninput="calculateTotalMarks(); updateCalculateButton()"></td>
+            <td><input type="number" id="spa_ec2" min="0" max="100" value="22" disabled oninput="calculateTotalMarks(); updateCalculateButton()"></td>
+            <td><input type="number" id="spa_ec3" min="0" max="100" value="22" disabled oninput="calculateTotalMarks(); updateCalculateButton()"></td>
+            <td><span id="spa_total"></span></td>
+            <td><span id="spa_effective_total"></span></td>
+            <td><span id="spa_weighted"></span></td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" id="nlp_enable" onclick="enableInputs('nlp'); updateCalculateButton()"></td>
+            <td>NLP</td>
+            <td><input type="number" id="nlp_units" min="0" max="10" value="5" disabled oninput="calculateTotalMarks();"></td>
+            <td><input type="number" id="nlp_ec1" min="0" max="100" disabled oninput="calculateTotalMarks(); updateCalculateButton()"></td>
+            <td><input type="number" id="nlp_ec2" min="0" max="100" disabled oninput="calculateTotalMarks(); updateCalculateButton()"></td>
+            <td><input type="number" id="nlp_ec3" min="0" max="100" disabled oninput="calculateTotalMarks(); updateCalculateButton()"></td>
+            <td><span id="nlp_total"></span></td>
+            <td><span id="nlp_effective_total"></span></td>
+            <td><span id="nlp_weighted"></span></td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" id="ir_enable" onclick="enableInputs('ir'); updateCalculateButton()"></td>
+            <td>IR</td>
+            <td><input type="number" id="ir_units" min="0" max="10" value="4" disabled oninput="calculateTotalMarks();"></td>
+            <td><input type="number" id="ir_ec1" min="0" max="100" disabled oninput="calculateTotalMarks(); updateCalculateButton()"></td>
+            <td><input type="number" id="ir_ec2" min="0" max="100" disabled oninput="calculateTotalMarks(); updateCalculateButton()"></td>
+            <td><input type="number" id="ir_ec3" min="0" max="100" disabled oninput="calculateTotalMarks(); updateCalculateButton()"></td>
+            <td><span id="ir_total"></span></td>
+            <td><span id="ir_effective_total"></span></td>
+            <td><span id="ir_weighted"></span></td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" id="gam_enable" onclick="enableInputs('gam'); updateCalculateButton()"></td>
+            <td>GAM</td>
+            <td><input type="number" id="gam_units" min="0" max="10" value="5" disabled oninput="calculateTotalMarks();"></td>
+            <td><input type="number" id="gam_ec1" min="0" max="100" disabled oninput="calculateTotalMarks(); updateCalculateButton()"></td>
+            <td><input type="number" id="gam_ec2" min="0" max="100" disabled oninput="calculateTotalMarks(); updateCalculateButton()"></td>
+            <td><input type="number" id="gam_ec3" min="0" max="100" disabled oninput="calculateTotalMarks(); updateCalculateButton()"></td>
+            <td><span id="gam_total"></span></td>
+            <td><span id="gam_effective_total"></span></td>
+            <td><span id="gam_weighted"></span></td>
+        </tr>
+    </table>
+    
+    <p>Your CGPA as per Sem2 grade card: 
+    <input type="number" id="CGPA" min="0" max="10" value="6.8" oninput="calculateTotalMarks(); updateCalculateButton();"></p>
+    <button id="calculateButton" onclick="calculateTotalMarks()" disabled>Calculate</button>
+    
+    <p>Your Total Marks: <span id="totalMarks"></span></p>
+    <p>Your Total Weighted Marks: <span id="TotalWeightedMarks"></span></p>
+    <p>Total Units: <span id="totalUnits"></span></p>
+    <p>Your Weighted Marks for Sem3: <span id="WeightedSem3Marks"></span></p>
+    <p>Your Final CGPA: <span id="FinalCGPA"></span></p>
+
+    <script>
+        function enableInputs(subject) {
+            const enableCheckbox = document.getElementById(subject + "_enable");
+            const ec1Input = document.getElementById(subject + "_ec1");
+            const ec2Input = document.getElementById(subject + "_ec2");
+            const ec3Input = document.getElementById(subject + "_ec3");
+
+            ec1Input.disabled = !enableCheckbox.checked;
+            ec2Input.disabled = !enableCheckbox.checked;
+            ec3Input.disabled = !enableCheckbox.checked;
+            calculateTotalMarks();
+        }
+
+        function calculateTotalMarks() {
+            let totalMarks = 0;
+
+            function getSubjectMarks(subject) {
+                const ec1 = parseFloat(document.getElementById(subject + "_ec1").value) || 0;
+                const ec2 = parseFloat(document.getElementById(subject + "_ec2").value) || 0;
+                const ec3 = parseFloat(document.getElementById(subject + "_ec3").value) || 0;
+                return ec1 + ec2 + ec3;
+            }
+            let marks = 0;
+            let units = 0;
+            let eff_marks = 0;
+            let totalUnits = 0;
+            let totalWeightedMarks = 0;
+            marks = getSubjectMarks('dl');
+            document.getElementById("dl_total").textContent = marks;
+            document.getElementById("dl_effective_total").textContent = marks; 
+            totalMarks += marks;
+            units = parseFloat(document.getElementById("dl_units").value) || 0;
+            document.getElementById("dl_weighted").textContent = marks * units;
+            totalUnits += units;
+            totalWeightedMarks += marks * units;
+            if (document.getElementById("pgm_enable").checked) {
+                marks = getSubjectMarks('pgm');
+                document.getElementById("pgm_total").textContent = marks;
+                document.getElementById("pgm_effective_total").textContent = marks;
+                totalMarks += marks;
+                units = parseFloat(document.getElementById("pgm_units").value) || 0;
+                document.getElementById("pgm_weighted").textContent = marks * units;
+                totalUnits += units;
+                totalWeightedMarks += marks * units;
+            }else{
+                document.getElementById("pgm_total").textContent = '';
+                document.getElementById("pgm_effective_total").textContent = '';
+                document.getElementById("pgm_weighted").textContent = '';
+            }
+            if (document.getElementById("bds_enable").checked) {
+                marks = getSubjectMarks('bds');
+                document.getElementById("bds_total").textContent = marks;
+                eff_marks= marks * 0.80;
+                document.getElementById("bds_effective_total").textContent = eff_marks.toFixed();
+                totalMarks += marks;
+                units = parseFloat(document.getElementById("bds_units").value) || 0;
+                document.getElementById("bds_weighted").textContent = eff_marks * units;
+                totalUnits += units;
+                totalWeightedMarks += eff_marks * units;
+            }else{
+                document.getElementById("bds_total").textContent = '';
+                document.getElementById("bds_effective_total").textContent = '';
+                document.getElementById("bds_weighted").textContent = '';
+            }            
+            if (document.getElementById("spa_enable").checked) {
+                marks = getSubjectMarks('spa');
+                document.getElementById("spa_total").textContent = marks;
+                eff_marks= marks * 0.80;
+                document.getElementById("spa_effective_total").textContent = eff_marks.toFixed();
+                totalMarks += marks;
+                units = parseFloat(document.getElementById("spa_units").value) || 0;
+                document.getElementById("spa_weighted").textContent = eff_marks * units;
+                totalUnits += units;
+                totalWeightedMarks += eff_marks * units;
+            }else{
+                document.getElementById("spa_total").textContent = '';
+                document.getElementById("spa_effective_total").textContent = '';
+                document.getElementById("spa_weighted").textContent = '';
+            }            
+            if (document.getElementById("nlp_enable").checked) {
+                marks = getSubjectMarks('nlp');
+                document.getElementById("nlp_total").textContent = marks;
+                eff_marks= marks * 0.80;
+                document.getElementById("nlp_effective_total").textContent = eff_marks.toFixed();
+                totalMarks += eff_marks;
+                units = parseFloat(document.getElementById("nlp_units").value) || 0;
+                document.getElementById("nlp_weighted").textContent = effmarks * units;
+                totalUnits += units;
+                totalWeightedMarks += eff_marks * units;
+            }else{
+                document.getElementById("nlp_total").textContent = '';
+                document.getElementById("nlp_effective_total").textContent = '';
+                document.getElementById("nlp_weighted").textContent = '';
+            }
+            if (document.getElementById("ir_enable").checked) {
+                marks = getSubjectMarks('ir');
+                document.getElementById("ir_total").textContent = marks;
+                document.getElementById("ir_effective_total").textContent = marks.toFixed();
+                totalMarks += marks;
+                units = parseFloat(document.getElementById("ir_units").value) || 0;
+                document.getElementById("ir_weighted").textContent = marks * units;
+                totalUnits += units;
+                totalWeightedMarks += marks * units;
+            }else{
+                document.getElementById("ir_total").textContent = '';
+                document.getElementById("ir_effective_total").textContent = '';
+                document.getElementById("ir_weighted").textContent = '';
+            }            
+            if (document.getElementById("gam_enable").checked) {
+                marks = getSubjectMarks('gam');
+                document.getElementById("gam_total").textContent = marks;
+                document.getElementById("gam_effective_total").textContent = marks.toFixed();
+                totalMarks += marks;
+                units = parseFloat(document.getElementById("gam_units").value) || 0;
+                document.getElementById("gam_weighted").textContent = marks * units;
+                totalUnits += units;
+                totalWeightedMarks += marks * units;
+            }else{
+                document.getElementById("gam_total").textContent = '';
+                document.getElementById("gam_effective_total").textContent = '';
+                document.getElementById("gam_weighted").textContent = '';
+            }            
+                return {
+                    "totalMarks":totalMarks,
+                    "totalWeightedMarks":totalWeightedMarks,
+                    "totalUnits":totalUnits
+                };
+        }
+
+        function updateCalculateButton() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            let enabledCount = 0;
+
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked && !checkbox.disabled) {
+                    enabledCount++;
+                }
+            });
+
+            const calculateButton = document.getElementById("calculateButton");
+            let cgpaInput = document.getElementById("CGPA").value.trim();
+            if (enabledCount === 3 && cgpaInput !== '') {
+                calculateButton.disabled = false;
+                const {totalMarks,totalWeightedMarks,totalUnits} = calculateTotalMarks();
+                document.getElementById("totalMarks").textContent = totalMarks.toFixed();
+                document.getElementById("TotalWeightedMarks").textContent = totalWeightedMarks.toFixed();
+                document.getElementById("totalUnits").textContent = totalUnits.toFixed();
+                WeightedSem3Marks = (totalWeightedMarks/totalUnits).toFixed();
+                document.getElementById("WeightedSem3Marks").textContent = WeightedSem3Marks;
+                document.getElementById("FinalCGPA").textContent = 
+                            ((WeightedSem3Marks/10) * (1/3) + cgpaInput * (2/3)).toFixed(1) ;
+
+            } else {
+                calculateButton.disabled = true;
+            }
+        }
+    </script>
+</body>
+</html>
